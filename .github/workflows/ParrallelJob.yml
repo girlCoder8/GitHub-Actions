@@ -1,0 +1,70 @@
+name: GitHub Actions Parallel Job with report
+'on':
+
+  workflow_dispatch: null
+  pull_request:
+    branches:
+      - master
+  push:
+    branches:
+      - master
+jobs:
+  Google-Test:
+    timeout-minutes: 120
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Google-Test
+        uses: cypress-io/github-action@v5
+        with:
+          command: npm run google
+          browser: chrome
+
+
+      - name: Upload Report- Google
+        uses: actions/upload-artifact@v3
+        with:
+          name: Test-Report-Google
+          path: cypress/reports/Result
+
+      - name: Upload merged artifact
+        uses: actions/download-artifact@v3
+        with:
+          path: cypress/reports/
+
+
+
+  Amazon-Test:
+    timeout-minutes: 120
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Amazon-Test
+        uses: cypress-io/github-action@v5
+        with:
+          command: npm run amazon
+          browser: chrome
+
+
+      - name: Upload Report- Amazon
+        uses: actions/upload-artifact@v3
+        with:
+          name: Test-Report-Amazon
+          path: cypress/reports/Result
+
+      - name: Upload merged artifact
+        uses: actions/download-artifact@v3
+        with:
+          path: cypress/reports/
+
+      - name : Merger
+        run: cp cypress/reports/Test-Report-*/* > cypress/reports/merged-report | cat cypress/reports/merged-report/*.html > cypress/reports/finalReport.html
+
+
+
+
+
+
+

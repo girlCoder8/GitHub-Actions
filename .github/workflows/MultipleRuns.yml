@@ -1,0 +1,19 @@
+name: GitHub Actions Multiple Runs
+'on':
+  workflow_dispatch: null
+  pull_request:
+    branches:
+      - master
+jobs:
+  Multiple-Test:
+    timeout-minutes: 120
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Google-Test
+        uses: cypress-io/github-action@v2
+      - name: Test Execution
+        run: |
+          npm run google
+          npm run amazon
